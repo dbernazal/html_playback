@@ -12,7 +12,10 @@ config :html_playback, HtmlPlaybackWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "51AXe2UgW4ycP/0D1eZ18OWmSR2AVVXqNmVL8ihP+jTu1t/vU9Np6XFqNU7AfQ1t",
   render_errors: [view: HtmlPlaybackWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: HtmlPlayback.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: HtmlPlayback.PubSub, adapter: Phoenix.PubSub.PG2],
+  live_view: [
+    signing_salt: "rVeFmJEroV2BBbNads01KTwiMAAcTOAZ34CZa7xP8BFI4yQ9Lobjtc64VtspClID"
+  ]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -20,7 +23,9 @@ config :logger, :console,
   metadata: [:request_id]
 
 # Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
+config :phoenix,
+  json_library: Jason,
+  template_engines: [leex: Phoenix.LiveView.Engine]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
