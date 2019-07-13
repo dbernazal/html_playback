@@ -1,0 +1,2 @@
+<div>Viewing the replay</div>
+<iframe src="<%= Routes.replay_player_path(@conn, :show) %>" />

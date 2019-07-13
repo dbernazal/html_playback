@@ -18,6 +18,8 @@ defmodule HtmlPlaybackWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/replay", ReplayController, :show
+    get "/replay_player", ReplayPlayerController, :show
   end
 
   # Other scopes may use custom stacks.

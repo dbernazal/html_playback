@@ -1,0 +1,14 @@
+<div class="">
+  <div>
+    <button phx-click="play">Play recording</button>
+    <div>
+      <%#
+       Normally, I wouldn't do this but since it's a demo,
+       I'm not worrying about unsafe actors. I could use something
+       like https://github.com/cure53/DOMPurify to handle security on browser side.
+      %>
+      <%= raw @snapshot_value%>
+    </div>
+  </div>
+</div>
+
