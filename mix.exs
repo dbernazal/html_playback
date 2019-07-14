@@ -19,7 +19,7 @@ defmodule HtmlPlayback.MixProject do
   def application do
     [
       mod: {HtmlPlayback.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :riak]
     ]
   end
 
@@ -39,7 +39,8 @@ defmodule HtmlPlayback.MixProject do
       {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:riak, "~> 1.1.6"}
     ]
   end
 end
