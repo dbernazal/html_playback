@@ -1,5 +1,6 @@
 defmodule HtmlPlayback.Snapshots do
-  alias HtmlPlayback.Session
+  alias HtmlPlayback.Schemas.Session
+  alias HtmlPlayback.Schemas.SnapshotGroup
   alias HtmlPlayback.Sessions
 
   @snapshots_bucket "snapshots"

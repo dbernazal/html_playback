@@ -1,4 +1,4 @@
-defmodule HtmlPlayback.Snapshot do
+defmodule HtmlPlayback.Schemas.Snapshot do
   @enforce_keys [:value, :timestamp]
   defstruct value: "", timestamp: nil
 

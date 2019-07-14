@@ -1,5 +1,5 @@
 defmodule HtmlPlayback.Sessions do
-  alias HtmlPlayback.Session
+  alias HtmlPlayback.Schemas.Session
 
   @sessions_bucket "sessions"
 

@@ -1,4 +1,4 @@
-defmodule HtmlPlayback.SnapshotGroup do
+defmodule HtmlPlayback.Schemas.SnapshotGroup do
   @enforce_keys [
     :initial_timestamp,
     :final_timestamp,
