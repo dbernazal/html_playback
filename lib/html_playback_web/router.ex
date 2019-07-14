@@ -23,7 +23,8 @@ defmodule HtmlPlaybackWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", HtmlPlaybackWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", HtmlPlaybackWeb do
+    pipe_through :api
+    post "/sites/:site_id/sessions/:session_id/snapshots", SnapshotController, :create
+  end
 end
