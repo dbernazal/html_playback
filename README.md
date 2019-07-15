@@ -1,7 +1,9 @@
 # HtmlPlayback
-Proof of concept application demonstrating recording an HTML view and replaying it later in a separate application using Elixir, Phoenix, Riak and LiveView.
+Proof of concept application demonstrating recording an HTML view and replaying it later. This POC is using the Elixir language, Phoenix for the web tier, Riak for persistence and LiveView for rendering the replays.
 
 ## Demo
+![Demo](html_replay_demo.gif)
+
 
 To start your Phoenix server:
 
