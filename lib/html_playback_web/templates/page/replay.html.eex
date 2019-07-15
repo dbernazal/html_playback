@@ -2,7 +2,7 @@
 <div class="container">
   <div class="row">
     <div class="column">
-      <iframe src="<%= Routes.replay_player_path(@conn, :show) %>" style="width: 100%; border-width: 0;"/>
+      <iframe src="<%= @replay_path %>" style="width: 100%; border-width: 0;"/>
     </div>
   </div>
 </div>

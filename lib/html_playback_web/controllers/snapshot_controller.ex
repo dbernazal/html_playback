@@ -22,6 +22,11 @@ defmodule HtmlPlaybackWeb.SnapshotController do
     end
   end
 
+  def create(conn, params) do
+    IO.inspect(params, label: "it happened")
+    send_resp(conn, :internal_server_error, "")
+  end
+
   # Normally I would use Ecto or another tool to safely
   # convert these but this is just a demo.
   # Taken from https://gist.github.com/kipcole9/0bd4c6fb6109bfec9955f785087f53fb

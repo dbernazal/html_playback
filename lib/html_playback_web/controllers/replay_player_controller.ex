@@ -4,7 +4,11 @@ defmodule HtmlPlaybackWeb.ReplayPlayerController do
 
   plug :put_layout, "basic.html"
 
-  def show(conn, _params) do
-    LiveView.Controller.live_render(conn, HtmlPlaybackWeb.ReplayPlayerView, session: %{})
+  def show(conn, %{"session_id" => session_id, "site_id" => site_id}) do
+    session = %HtmlPlayback.Schemas.Session{id: session_id, site_id: site_id}
+
+    LiveView.Controller.live_render(conn, HtmlPlaybackWeb.ReplayPlayerView,
+      session: %{snapshots: HtmlPlayback.Snapshots.list(session)}
+    )
   end
 end

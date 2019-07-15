@@ -9,6 +9,7 @@ defmodule HtmlPlayback.Snapshots do
     session
     |> Sessions.list_snapshot_group_keys()
     |> Enum.flat_map(&fetch_group(&1).snapshots)
+    |> Enum.sort(fn x, y -> x.timestamp <= y.timestamp end)
   end
 
   def create_snapshot_group(site_id, session_id, snapshots) do

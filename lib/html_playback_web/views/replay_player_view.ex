@@ -6,7 +6,7 @@ defmodule HtmlPlaybackWeb.ReplayPlayerView do
   end
 
   def handle_event("play", _value, socket) do
-    send(self(), {:render_snapshot, []})
+    send(self(), {:render_snapshot, socket.assigns.snapshots})
     {:noreply, assign(socket, snapshot_value: "Starting to render...")}
   end
 
@@ -27,12 +27,21 @@ defmodule HtmlPlaybackWeb.ReplayPlayerView do
     {:noreply, assign(socket, snapshot_value: value)}
   end
 
-  def handle_info({:render_snapshot, _rest}, socket) do
-    {:noreply, socket}
+  def handle_info({:render_snapshot, [%{value: value}]}, socket) do
+    {:noreply, assign(socket, snapshot_value: value)}
   end
 
-  def mount(_session, socket) do
-    {:ok, assign(socket, snapshot_value: "")}
+  def handle_info({:render_snapshot, _rest}, socket) do
+    {:noreply, assign(socket, snapshot_value: "<h1>Replay complete!</h1>")}
+  end
+
+  def mount(%{snapshots: snapshots}, socket) do
+    updated_socket =
+      socket
+      |> assign(snapshot_value: "")
+      |> assign(snapshots: snapshots)
+
+    {:ok, updated_socket}
   end
 
   defp time_diff_in_milliseconds(initial_timestamp, final_timestamp),

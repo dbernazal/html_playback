@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="root"></div>
+    <!--Normally, I would compile all this but it's a demo so, meh-->
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,Promise,Symbol,Object.setPrototypeOf,Object.getOwnPropertySymbols"></script>
+    <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
+    <script type="text/babel">
+      
+      class ColorChangeButton extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = {color: 'green'}
+        }
+
+        render() {
+          const style = {
+            backgroundColor: this.state.color
+          }
+          return (
+            <div>
+              <div style={style}><span style={{color: 'white'}}>This is some color</span></div>
+              <button onClick={(state) => this.setState({color: 'red'})}>Red</button>
+              <button onClick={(state) => this.setState({color: 'blue'})}>Blue</button>
+              <button onClick={(state) => this.setState({color: 'green'})}>Green</button>
+            </div>
+          )
+        }
+      }
+
+      class Demo extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = {itemsCount: 0}
+        }
+
+        addItem = () => this.setState(state => ({itemsCount: state.itemsCount + 1}))
+        // I miss my guard expressions...😔
+        removeItem = () => this.setState(state => (this.state.itemsCount == 0 ? this.state : {itemsCount: state.itemsCount - 1}))
+
+        render () {
+          return (
+            <div>
+              <p>Click the buttons to change the number of button on the page</p>
+              <button onClick={this.addItem}>Add an item</button>
+              <button onClick={this.removeItem}>Remove an item</button>
+              <div id='observable'>
+                <ul>
+                  {
+                    [...Array(this.state.itemsCount).keys()].map((key) =>
+                      <ColorChangeButton key={key.toString()} />
+                    )
+                  }
+                </ul>
+              </div>
+            </div>
+          )
+        }
+      }
+
+        ReactDOM.render(
+        <Demo/>,
+        document.getElementById('root')
+      )
+    </script>
+    <script>
+      function guidGenerator() {
+        var S4 = function() {
+          return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        };
+        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+      }
+      let pendingSnapshots = []
+      const sessionId = guidGenerator()
+      const siteId = 'test'
+
+      // Record the snapshots groups on a 2 second interval
+       setInterval(() => {
+         if (pendingSnapshots.length > 0){
+           payload = JSON.stringify({snapshots: pendingSnapshots, session_id: sessionId, site_id: siteId})
+           superagent
+             .post(`http://localhost:4000/api/sites/${siteId}/sessions/${sessionId}/snapshots`)
+             .send(payload)
+             .set('Accept', 'application/json')
+             .set('Content-Type', 'application/json')
+             .end(function (err, res) {
+               console.log(`Recording session data. View this session at http://localhost:4000/sites/${siteId}/sessions/${sessionId}/replay`)
+             });
+           pendingSnapshots = []
+         }
+       }, 2000)
+
+      // Default config for MutationObserver
+      const defaultMutationConfig = { attributes: true, childList: true, subtree: true, characterData: true, characterDataOldValue: true }
+
+      // ID of the element we want to observe
+      const observableId = 'observable'
+
+      // Enables the element to be observed for changes. Need to specify the element to be monitored
+      // via the elementId. Can optionally specify the mutation config for the MutationObserver.
+      const recordElementObserver = (elementId, mutationConfig = defaultMutationConfig) => {
+        const element = document.getElementById(observableId)
+        const elementObserver = new MutationObserver(recordChangeBuilder(observableId))
+
+        elementObserver.observe(element, mutationConfig)
+      }
+
+      // Uses currying to create a function that records the html state of the element
+      // specified by the observableId.
+      const recordChangeBuilder = (observableId) => () => {
+        const snapshot = {
+          value: document.getElementById(observableId).innerHTML,
+          timestamp: Date.now()
+        }
+        pendingSnapshots.push(snapshot)
+      }
+
+
+      // Trigger a function to be called once an element has been rendered on the page.
+      // We're double currying here so we don't have to maintain the hasBeenEnabled variable outside of this function.
+      // This function will get executed every time the document changes but after the initial time it becomes a noop.
+      const elementRenderedHandlerBuilder = (elementId, handler) => (hasBeenEnabled = false) => () => {
+        if (document.body.contains(document.getElementById(elementId)) && !hasBeenEnabled) {
+          handler(elementId)
+
+          // Make sure we don't rebind the handler otherwise we'll get duplicated messages every time
+          // a change has been observed
+          hasBeenEnabled = true
+        }
+      }
+
+      var documentObserver = new MutationObserver(elementRenderedHandlerBuilder(observableId, recordElementObserver)())
+      documentObserver.observe(document, defaultMutationConfig)
+    </script>
+  </body>
+</html>
+
